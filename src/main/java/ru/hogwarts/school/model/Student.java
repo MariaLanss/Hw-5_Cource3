@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+
 public class Student {
     @Id
     @GeneratedValue

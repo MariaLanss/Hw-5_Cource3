@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
+
 public class Faculty {
     @Id
     @GeneratedValue
