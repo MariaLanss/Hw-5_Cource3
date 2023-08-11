@@ -77,13 +77,13 @@ public class FacultyControllerTest {
         final String color = "red";
         final int index = 0;
 
-        when(facultyRepository.findByColor(any(String.class))).thenReturn((Collection<Faculty>) faculties
-                .stream().filter(f -> f.getColor().equals(color)).collect(Collectors.toList()));
+        List<Faculty> result = faculties
+                .stream().filter(f -> f.getColor().equals(color)).toList();
+        when(facultyRepository.findByColor(any(String.class))).thenReturn(result);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculty?color=" + color))
                 .andExpect(status().isOk())
-                .andExpect((ResultMatcher) jsonPath("$.*", isA(Collection.class)))
                 .andExpect(jsonPath("$.*", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(faculties.get(index).getId()))
                 .andExpect(jsonPath("$[0].name").value(faculties.get(index).getName()))
@@ -92,18 +92,17 @@ public class FacultyControllerTest {
     }
 
     @Test
-    void shouldReturnFacultyByNameOrColor() throws Exception{
+    void shouldReturnFacultyByNameOrColor() throws Exception {
         final String nameOrColor = "slytherin";
         final int index = 1;
 
-        when(facultyRepository.findAllByNameIgnoreCaseOrColorIgnoreCase(nameOrColor, nameOrColor)).thenReturn(
-                faculties.stream().filter(f-> f.getName().equalsIgnoreCase(nameOrColor) || f.getColor().equalsIgnoreCase(nameOrColor))
-                        .collect(Collectors.toList()));
+        List<Faculty> result = faculties
+                .stream().filter(f -> f.getName().equalsIgnoreCase(nameOrColor)).toList();
+                when(facultyRepository.findAllByNameIgnoreCaseOrColorIgnoreCase(nameOrColor, nameOrColor)).thenReturn(result);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculty?nameOrColor=" + nameOrColor))
                 .andExpect(status().isOk())
-                .andExpect((ResultMatcher) jsonPath("$.*", isA(Collection.class)))
                 .andExpect(jsonPath("$.*", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(faculties.get(index).getId()))
                 .andExpect(jsonPath("$[0].name").value(faculties.get(index).getName()))
@@ -126,11 +125,11 @@ public class FacultyControllerTest {
     }
 
     @Test
-    void shouldReturnStudentsForFaculty() throws Exception{
+    void shouldReturnStudentsForFaculty() throws Exception {
         final long facultyId = 1L;
         Faculty gryffindorFaculty = faculties.get(0);
 
-        List<Student> gryffindorStudents=List.of(
+        List<Student> gryffindorStudents = List.of(
                 new Student(1L, "Harry Potter", 11),
                 new Student(2L, "Ron Weasley", 11),
                 new Student(3L, "Hermiony Granger", 11)
@@ -139,14 +138,13 @@ public class FacultyControllerTest {
         when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(gryffindorFaculty));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty/" + facultyId +"/students"))
+                        .get("/faculty/" + facultyId + "/students"))
                 .andExpect(status().isOk())
-                .andExpect((ResultMatcher) jsonPath("$.*", isA(Collection.class)))
                 .andExpect(jsonPath("$.*", hasSize(3)));
     }
 
     @Test
-    void shouldReturntFacutlyWhennAddCalled() throws Exception{
+    void shouldReturntFacutlyWhennAddCalled() throws Exception {
         Faculty faculty = new Faculty(5L, "Some faculty", "black");
         when(facultyRepository.save(any(Faculty.class))).thenReturn(faculty);
 
@@ -166,7 +164,7 @@ public class FacultyControllerTest {
     }
 
     @Test
-    void shouldReturnFacultyWhenEditCalled() throws Exception{
+    void shouldReturnFacultyWhenEditCalled() throws Exception {
         Faculty faculty = faculties.get(3);
         when(facultyRepository.save(any(Faculty.class))).thenReturn(faculty);
         when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(faculty));
@@ -186,16 +184,12 @@ public class FacultyControllerTest {
                 .andExpect(jsonPath("$.color").value(faculty.getColor()))
         ;
     }
-
     @Test
     void shouldReturnOKWhenDeleteCalled() throws Exception{
         doNothing().when(facultyRepository).deleteById(any(Long.class));
-
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/faculty/4"))
                 .andExpect(status().isOk());
-
         verify(facultyRepository, only()).deleteById(any(Long.class));
     }
-
 }
