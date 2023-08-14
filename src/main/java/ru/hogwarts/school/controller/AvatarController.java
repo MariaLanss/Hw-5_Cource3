@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -66,7 +67,13 @@ public class AvatarController {
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
         headers.setContentLength(avatar.getData().length);
 
+        System.out.println(studentId + " length = " + avatar.getData().length);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
+    }
+    @GetMapping("/list-of-avatars")
+    public List<Avatar> getAllAvatarsPreview (@RequestParam("page") Integer pageNumber,
+                                              @RequestParam("size") Integer size){
+        return avatarService.getListOfAvatars(pageNumber, size);
     }
 
 }
