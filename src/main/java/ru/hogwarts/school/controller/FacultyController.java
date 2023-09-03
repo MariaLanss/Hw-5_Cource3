@@ -43,6 +43,16 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getStudents(id));
     }
 
+    @GetMapping("/longest-facutly-name")
+    public String getLongestFacultyName(){
+        return facultyService.getLongestFacultyName();
+    }
+
+    @GetMapping("/calculate")
+    public Integer parallelStreamsTask4(){
+        return facultyService.calculate();
+    }
+
     @PostMapping()
     public Faculty addFaculty(@RequestBody Faculty faculty){
         return facultyService.add(faculty);
