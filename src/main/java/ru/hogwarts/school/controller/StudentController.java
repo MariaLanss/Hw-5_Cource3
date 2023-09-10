@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -88,5 +89,19 @@ public class StudentController {
     public ResponseEntity delete(@PathVariable long id){
         studentService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Вывести список имен студентов в консоль")
+    @GetMapping("/students-names")
+    public ResponseEntity<String> getStudentsNames() {
+        studentService.printStudentsNames();
+        return ResponseEntity.ok("Список студентов выводится в консоль");
+    }
+
+    @Operation(summary = "Вывести список имен студентов в консоль c синхронизацией")
+    @GetMapping("/students-names-sync")
+    public ResponseEntity<String> getStudentsNamesSync() {
+        studentService.printStudentsNamesSync();
+        return ResponseEntity.ok("Список студентов выводится в консоль");
     }
 }
